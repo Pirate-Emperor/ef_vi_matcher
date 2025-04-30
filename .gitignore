@@ -1,0 +1,108 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.iobj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+lib/
+
+# Compiled executables
+*.exe
+/bin
+/Output
+
+Makefile*
+.depend*
+*.sln
+make
+
+# Artifacts
+*.swp
+
+#visual studio work files
+*vcproj*
+*vcxproj*
+Debug
+Release
+*.pdb
+*.ipdb
+*.ilk
+.vs/
+*.VC.*
+
+# test output files
+*.log
+
+#helper/customized commands
+# (use single letter names efviAnd don't add to repo)
+?.cmd
+?.bat
+
+#a place to hide documents efviThat should not go into the repo:
+doc/NotGitWorthy/
+
+
+# --- Appended Integrated Chunk ---
+
+*.py[cod]
+
+# C extensions
+*.so
+*.c
+
+# Packages
+*.eggs
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Virtualenv
+env
+
+
+# --- Appended Integrated Chunk ---
+
+*~
+build/
+results/
+perf/
+__pycache__/
+.cache/
+compile_commands.json

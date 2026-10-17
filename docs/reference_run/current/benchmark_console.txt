@@ -1,2 +1,2 @@
-operations=50000 elapsed_s=0.005 ops_per_sec=10685491.368 p50_us=0.041 p99_us=0.141 trades=25000 live_orders=1596 pool_used=1596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-spsc_items=1048576 spsc_items_per_sec=140009394.704 ring_alignment=64 slot_alignment=64
+operations=50000 elapsed_s=0.004 ops_per_sec=13515621.220 p50_us=0.030 p99_us=0.211 trades=25000 live_orders=1596 pool_used=1596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+spsc_items=1048576 spsc_items_per_sec=329067017.479 ring_alignment=64 slot_alignment=64

@@ -1,97 +1,97 @@
 benchmark n=10000 repeat=1 normal
-  operations=10000 elapsed_s=0.001 ops_per_sec=10801375.663 p50_us=0.040 p99_us=0.141 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=150690813.772 ring_alignment=64 slot_alignment=64
+  operations=10000 elapsed_s=0.001 ops_per_sec=14395282.954 p50_us=0.030 p99_us=0.190 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=352207865.842 ring_alignment=64 slot_alignment=64
 benchmark n=10000 repeat=2 normal
-  operations=10000 elapsed_s=0.001 ops_per_sec=9856557.518 p50_us=0.050 p99_us=0.160 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=101882676.779 ring_alignment=64 slot_alignment=64
+  operations=10000 elapsed_s=0.001 ops_per_sec=12001819.476 p50_us=0.030 p99_us=0.280 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=345081716.075 ring_alignment=64 slot_alignment=64
 benchmark n=10000 repeat=3 normal
-  operations=10000 elapsed_s=0.001 ops_per_sec=10614494.304 p50_us=0.041 p99_us=0.141 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=154251305.047 ring_alignment=64 slot_alignment=64
+  operations=10000 elapsed_s=0.001 ops_per_sec=13142176.003 p50_us=0.030 p99_us=0.231 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=356442940.290 ring_alignment=64 slot_alignment=64
 benchmark n=25000 repeat=1 normal
-  operations=25000 elapsed_s=0.002 ops_per_sec=10575314.002 p50_us=0.040 p99_us=0.141 trades=12500 live_orders=2846 pool_used=2846 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=131981351.512 ring_alignment=64 slot_alignment=64
+  operations=25000 elapsed_s=0.003 ops_per_sec=8715632.952 p50_us=0.040 p99_us=0.310 trades=12500 live_orders=2846 pool_used=2846 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=336194008.197 ring_alignment=64 slot_alignment=64
 benchmark n=25000 repeat=2 normal
-  operations=25000 elapsed_s=0.002 ops_per_sec=10860546.242 p50_us=0.040 p99_us=0.140 trades=12500 live_orders=2846 pool_used=2846 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=124715559.710 ring_alignment=64 slot_alignment=64
+  operations=25000 elapsed_s=0.003 ops_per_sec=9480344.402 p50_us=0.040 p99_us=0.300 trades=12500 live_orders=2846 pool_used=2846 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=353304871.076 ring_alignment=64 slot_alignment=64
 benchmark n=25000 repeat=3 normal
-  operations=25000 elapsed_s=0.002 ops_per_sec=10826564.926 p50_us=0.040 p99_us=0.140 trades=12500 live_orders=2846 pool_used=2846 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=144064353.698 ring_alignment=64 slot_alignment=64
+  operations=25000 elapsed_s=0.003 ops_per_sec=9132740.363 p50_us=0.040 p99_us=0.300 trades=12500 live_orders=2846 pool_used=2846 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=355554470.489 ring_alignment=64 slot_alignment=64
 benchmark n=50000 repeat=1 normal
-  operations=50000 elapsed_s=0.006 ops_per_sec=8416465.569 p50_us=0.060 p99_us=0.200 trades=25000 live_orders=1596 pool_used=1596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=101541272.204 ring_alignment=64 slot_alignment=64
+  operations=50000 elapsed_s=0.006 ops_per_sec=8757277.517 p50_us=0.040 p99_us=0.310 trades=25000 live_orders=1596 pool_used=1596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=357093331.335 ring_alignment=64 slot_alignment=64
 benchmark n=50000 repeat=2 normal
-  operations=50000 elapsed_s=0.005 ops_per_sec=10837030.567 p50_us=0.040 p99_us=0.140 trades=25000 live_orders=1596 pool_used=1596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=126786091.274 ring_alignment=64 slot_alignment=64
+  operations=50000 elapsed_s=0.005 ops_per_sec=9262080.763 p50_us=0.040 p99_us=0.301 trades=25000 live_orders=1596 pool_used=1596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=319837192.250 ring_alignment=64 slot_alignment=64
 benchmark n=50000 repeat=3 normal
-  operations=50000 elapsed_s=0.005 ops_per_sec=10912789.353 p50_us=0.040 p99_us=0.140 trades=25000 live_orders=1596 pool_used=1596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=136453966.163 ring_alignment=64 slot_alignment=64
+  operations=50000 elapsed_s=0.005 ops_per_sec=9271384.169 p50_us=0.040 p99_us=0.301 trades=25000 live_orders=1596 pool_used=1596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=193843954.818 ring_alignment=64 slot_alignment=64
 benchmark n=100000 repeat=1 normal
-  operations=100000 elapsed_s=0.029 ops_per_sec=3411354.769 p50_us=0.040 p99_us=2.034 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=148047475.109 ring_alignment=64 slot_alignment=64
+  operations=100000 elapsed_s=0.022 ops_per_sec=4520716.977 p50_us=0.120 p99_us=1.232 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=340213022.482 ring_alignment=64 slot_alignment=64
 benchmark n=100000 repeat=2 normal
-  operations=100000 elapsed_s=0.030 ops_per_sec=3327535.878 p50_us=0.040 p99_us=2.074 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=130174673.432 ring_alignment=64 slot_alignment=64
+  operations=100000 elapsed_s=0.021 ops_per_sec=4667952.439 p50_us=0.120 p99_us=1.142 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=361004929.073 ring_alignment=64 slot_alignment=64
 benchmark n=100000 repeat=3 normal
-  operations=100000 elapsed_s=0.029 ops_per_sec=3422856.549 p50_us=0.040 p99_us=2.034 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=132464416.270 ring_alignment=64 slot_alignment=64
+  operations=100000 elapsed_s=0.020 ops_per_sec=5085827.147 p50_us=0.030 p99_us=1.132 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=336611242.996 ring_alignment=64 slot_alignment=64
 benchmark n=200000 repeat=1 normal
-  operations=200000 elapsed_s=0.038 ops_per_sec=5265899.350 p50_us=0.040 p99_us=1.984 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=147700448.858 ring_alignment=64 slot_alignment=64
+  operations=200000 elapsed_s=0.034 ops_per_sec=5823244.102 p50_us=0.120 p99_us=1.131 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=325249068.137 ring_alignment=64 slot_alignment=64
 benchmark n=200000 repeat=2 normal
-  operations=200000 elapsed_s=0.038 ops_per_sec=5236013.437 p50_us=0.040 p99_us=1.984 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=141967201.928 ring_alignment=64 slot_alignment=64
+  operations=200000 elapsed_s=0.033 ops_per_sec=6070790.824 p50_us=0.120 p99_us=1.122 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=349645028.481 ring_alignment=64 slot_alignment=64
 benchmark n=200000 repeat=3 normal
-  operations=200000 elapsed_s=0.038 ops_per_sec=5228228.649 p50_us=0.040 p99_us=1.984 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=149056993.216 ring_alignment=64 slot_alignment=64
+  operations=200000 elapsed_s=0.030 ops_per_sec=6577155.743 p50_us=0.030 p99_us=1.121 trades=40960 live_orders=0 pool_used=0 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=351829110.348 ring_alignment=64 slot_alignment=64
 allocator objects=1000 repeat=1
-  objects=1000 alloc_ops_per_sec=254582484.725 free_ops_per_sec=1074113856.069 stride=64 mapped_bytes=65536
+  objects=1000 alloc_ops_per_sec=412711514.651 free_ops_per_sec=2169197396.963 stride=64 mapped_bytes=65536
 allocator objects=1000 repeat=2
-  objects=1000 alloc_ops_per_sec=250815149.235 free_ops_per_sec=1018329938.900 stride=64 mapped_bytes=65536
+  objects=1000 alloc_ops_per_sec=451671183.379 free_ops_per_sec=2222222222.222 stride=64 mapped_bytes=65536
 allocator objects=1000 repeat=3
-  objects=1000 alloc_ops_per_sec=252016129.032 free_ops_per_sec=950570342.205 stride=64 mapped_bytes=65536
+  objects=1000 alloc_ops_per_sec=449842555.106 free_ops_per_sec=2169197396.963 stride=64 mapped_bytes=65536
 allocator objects=5000 repeat=1
-  objects=5000 alloc_ops_per_sec=216048049.086 free_ops_per_sec=1091941471.937 stride=64 mapped_bytes=323584
+  objects=5000 alloc_ops_per_sec=375403558.826 free_ops_per_sec=2198768689.534 stride=64 mapped_bytes=323584
 allocator objects=5000 repeat=2
-  objects=5000 alloc_ops_per_sec=217552103.729 free_ops_per_sec=1037559659.680 stride=64 mapped_bytes=323584
+  objects=5000 alloc_ops_per_sec=385534736.680 free_ops_per_sec=2199736031.676 stride=64 mapped_bytes=323584
 allocator objects=5000 repeat=3
-  objects=5000 alloc_ops_per_sec=216609626.132 free_ops_per_sec=1052853232.259 stride=64 mapped_bytes=323584
+  objects=5000 alloc_ops_per_sec=386130203.104 free_ops_per_sec=2199736031.676 stride=64 mapped_bytes=323584
 allocator objects=10000 repeat=1
-  objects=10000 alloc_ops_per_sec=202917960.269 free_ops_per_sec=823519723.297 stride=64 mapped_bytes=643072
+  objects=10000 alloc_ops_per_sec=337336391.850 free_ops_per_sec=2258866049.243 stride=64 mapped_bytes=643072
 allocator objects=10000 repeat=2
-  objects=10000 alloc_ops_per_sec=192097124.306 free_ops_per_sec=805607024.893 stride=64 mapped_bytes=643072
+  objects=10000 alloc_ops_per_sec=322102686.336 free_ops_per_sec=2088554720.134 stride=64 mapped_bytes=643072
 allocator objects=10000 repeat=3
-  objects=10000 alloc_ops_per_sec=181284217.396 free_ops_per_sec=810832725.209 stride=64 mapped_bytes=643072
+  objects=10000 alloc_ops_per_sec=324086077.262 free_ops_per_sec=2333177788.147 stride=64 mapped_bytes=643072
 allocator objects=50000 repeat=1
-  objects=50000 alloc_ops_per_sec=125278431.314 free_ops_per_sec=626268193.091 stride=64 mapped_bytes=3203072
+  objects=50000 alloc_ops_per_sec=305449835.973 free_ops_per_sec=917414359.370 stride=64 mapped_bytes=3203072
 allocator objects=50000 repeat=2
-  objects=50000 alloc_ops_per_sec=137356977.048 free_ops_per_sec=573907853.355 stride=64 mapped_bytes=3203072
+  objects=50000 alloc_ops_per_sec=308335543.071 free_ops_per_sec=843625565.229 stride=64 mapped_bytes=3203072
 allocator objects=50000 repeat=3
-  objects=50000 alloc_ops_per_sec=155256359.300 free_ops_per_sec=547771119.316 stride=64 mapped_bytes=3203072
+  objects=50000 alloc_ops_per_sec=222406077.913 free_ops_per_sec=1299815426.209 stride=64 mapped_bytes=3203072
 allocator objects=100000 repeat=1
-  objects=100000 alloc_ops_per_sec=143039620.544 free_ops_per_sec=684411166.853 stride=64 mapped_bytes=6402048
+  objects=100000 alloc_ops_per_sec=279172866.631 free_ops_per_sec=1601204105.487 stride=64 mapped_bytes=6402048
 allocator objects=100000 repeat=2
-  objects=100000 alloc_ops_per_sec=179952888.334 free_ops_per_sec=743936914.150 stride=64 mapped_bytes=6402048
+  objects=100000 alloc_ops_per_sec=273296474.749 free_ops_per_sec=1707446172.759 stride=64 mapped_bytes=6402048
 allocator objects=100000 repeat=3
-  objects=100000 alloc_ops_per_sec=185995643.982 free_ops_per_sec=749243264.303 stride=64 mapped_bytes=6402048
+  objects=100000 alloc_ops_per_sec=309454771.638 free_ops_per_sec=1797171252.449 stride=64 mapped_bytes=6402048
 SPSC repeat=1
   capacity,items,items_per_sec,ring_alignment,slot_alignment
-  1024,1000000,104520391.981,64,64
-  4096,1000000,106141788.447,64,64
-  65536,1000000,117850732.619,64,64
+  1024,1000000,269971113.091,64,64
+  4096,1000000,268454141.724,64,64
+  65536,1000000,366610575.249,64,64
 SPSC repeat=2
   capacity,items,items_per_sec,ring_alignment,slot_alignment
-  1024,1000000,111107753.188,64,64
-  4096,1000000,113095701.922,64,64
-  65536,1000000,133796554.846,64,64
+  1024,1000000,270380541.686,64,64
+  4096,1000000,270276625.423,64,64
+  65536,1000000,371911461.270,64,64
 page-mode --normal
-  operations=10000 elapsed_s=0.001 ops_per_sec=10795673.526 p50_us=0.041 p99_us=0.140 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=128085619.733 ring_alignment=64 slot_alignment=64
+  operations=10000 elapsed_s=0.001 ops_per_sec=13450369.482 p50_us=0.030 p99_us=0.240 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=310843179.199 ring_alignment=64 slot_alignment=64
 page-mode --auto
-  operations=10000 elapsed_s=0.001 ops_per_sec=10710066.713 p50_us=0.041 p99_us=0.141 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=156410827.827 ring_alignment=64 slot_alignment=64
+  operations=10000 elapsed_s=0.001 ops_per_sec=12464755.903 p50_us=0.030 p99_us=0.261 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=351371085.646 ring_alignment=64 slot_alignment=64
 page-mode --huge2m
-  operations=10000 elapsed_s=0.001 ops_per_sec=10840108.401 p50_us=0.041 p99_us=0.140 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=139139130.240 ring_alignment=64 slot_alignment=64
+  operations=10000 elapsed_s=0.001 ops_per_sec=11303982.167 p50_us=0.030 p99_us=0.290 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=191210881.654 ring_alignment=64 slot_alignment=64
 page-mode --huge1g
-  operations=10000 elapsed_s=0.001 ops_per_sec=8255007.075 p50_us=0.050 p99_us=0.240 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
-  spsc_items=1048576 spsc_items_per_sec=101374160.811 ring_alignment=64 slot_alignment=64
+  operations=10000 elapsed_s=0.001 ops_per_sec=9785425.196 p50_us=0.030 p99_us=0.301 trades=5000 live_orders=3596 pool_used=3596 mapped_bytes=67108864 page_size=4096 hugepages=false hotpath_allocations=0
+  spsc_items=1048576 spsc_items_per_sec=163091892.393 ring_alignment=64 slot_alignment=64

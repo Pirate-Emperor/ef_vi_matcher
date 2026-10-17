@@ -15,6 +15,6 @@
 <text x="54" y="364" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22"></text>
 <text x="54" y="400" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22">100% tests passed, 0 tests failed out of 2</text>
 <text x="54" y="436" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22"></text>
-<text x="54" y="472" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22">Total Test time (real) =   0.08 sec</text>
+<text x="54" y="472" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22">Total Test time (real) =   0.07 sec</text>
 <text x="54" y="544" fill="#aab3bd" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="15">Recorded source: ctest_release.txt</text>
 </svg>

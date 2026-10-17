@@ -5,7 +5,7 @@
 <circle cx="78" cy="51" r="7" fill="#dfbf70"/>
 <circle cx="102" cy="51" r="7" fill="#7bc28a"/>
 <text x="132" y="59" fill="#f2f5f8" font-family="DejaVu Sans, sans-serif" font-size="24" font-weight="600">Reference environment</text>
-<text x="54" y="112" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22">Linux runnervm8df0l 6.17.0-1022-azure #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC</text>
+<text x="54" y="112" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22">Linux runnervm8k3b6 6.17.0-1022-azure #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC</text>
 <text x="54" y="148" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22">2026 x86_64 x86_64 x86_64 GNU/Linux</text>
 <text x="54" y="184" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22">c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0</text>
 <text x="54" y="220" fill="#f2f5f8" font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="22">Copyright (C) 2023 Free Software Foundation, Inc.</text>

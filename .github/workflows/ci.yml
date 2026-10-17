@@ -1,0 +1,149 @@
+name: efvi-ci
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: efvi-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Configure release
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DEFVI_ENABLE_DPDK=OFF
+
+      - name: Build release
+        run: cmake --build build --parallel
+
+      - name: Test release
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p ci-artifacts
+          ctest --test-dir build --output-on-failure | tee ci-artifacts/ctest_release.txt
+
+      - name: Run smoke examples
+        shell: bash
+        run: |
+          set -o pipefail
+          ./build/efvi_matcher | tee ci-artifacts/matcher_smoke.txt
+          ./build/efvi_software_rx_demo | tee ci-artifacts/software_rx_loopback.txt
+          ./build/efvi_order_flow_demo | tee ci-artifacts/order_flow_demo.txt
+          ./build/efvi_hugepage_probe | tee ci-artifacts/hugepage_probe.txt
+          ./build/efvi_allocator_benchmark 10000 | tee ci-artifacts/allocator_baseline.txt
+          ./build/efvi_benchmark 50000 --normal | tee ci-artifacts/benchmark_console.txt
+          cp efvi_benchmark.csv ci-artifacts/benchmark.csv
+
+      - name: Check strict huge-page behavior
+        shell: bash
+        run: |
+          set +e
+          ./build/efvi_benchmark 10000 --huge1g --strict > ci-artifacts/hugepage_strict.txt 2>&1
+          rc=$?
+          set -e
+          printf "strict_mode_exit_code=%s\n" "$rc" >> ci-artifacts/hugepage_strict.txt
+          if [[ "$rc" -ne 0 && "$rc" -ne 2 ]]; then
+            exit "$rc"
+          fi
+
+      - name: Test install path
+        shell: bash
+        run: |
+          cmake --install build --prefix "$GITHUB_WORKSPACE/stage"
+          "$GITHUB_WORKSPACE/stage/bin/efvi_matcher" | tee ci-artifacts/install_test.txt
+
+      - name: Check optional DPDK configure
+        shell: bash
+        run: |
+          cmake -S . -B build-dpdk-check -DCMAKE_BUILD_TYPE=Release -DEFVI_ENABLE_DPDK=ON | tee ci-artifacts/dpdk_config.txt
+          cmake --build build-dpdk-check --parallel
+
+      - name: Run experiment matrix
+        shell: bash
+        run: python3 scripts/run_experiments.py
+
+      - name: Build and run Docker reference image
+        run: |
+          docker build -t efvi-zero-copy-matcher:ci .
+          docker run --rm efvi-zero-copy-matcher:ci
+
+      - name: Configure ASan/UBSan
+        run: cmake -S . -B build-asan -DCMAKE_BUILD_TYPE=Debug -DEFVI_ENABLE_DPDK=OFF -DEFVI_ENABLE_SANITIZERS=ON
+
+      - name: Build ASan/UBSan
+        run: cmake --build build-asan --parallel
+
+      - name: Test ASan/UBSan
+        shell: bash
+        run: |
+          set -o pipefail
+          ctest --test-dir build-asan --output-on-failure | tee ci-artifacts/ctest_asan.txt
+
+      - name: Save system information
+        shell: bash
+        run: |
+          printf "%s\n" "${{ github.sha }}" > ci-artifacts/commit.txt
+          uname -a > ci-artifacts/system.txt
+          c++ --version > ci-artifacts/compiler.txt
+
+      - name: Copy recorded data
+        shell: bash
+        run: |
+          mkdir -p docs/reference_run/current
+          cp ci-artifacts/ctest_release.txt docs/reference_run/current/ctest_release.txt
+          cp ci-artifacts/ctest_asan.txt docs/reference_run/current/ctest_asan.txt
+          cp ci-artifacts/matcher_smoke.txt docs/reference_run/current/matcher_smoke.txt
+          cp ci-artifacts/software_rx_loopback.txt docs/reference_run/current/software_rx_loopback.txt
+          cp ci-artifacts/order_flow_demo.txt docs/reference_run/current/order_flow_demo.txt
+          cp ci-artifacts/hugepage_probe.txt docs/reference_run/current/hugepage_probe.txt
+          cp ci-artifacts/allocator_baseline.txt docs/reference_run/current/allocator_baseline.txt
+          cp ci-artifacts/benchmark_console.txt docs/reference_run/current/benchmark_console.txt
+          cp ci-artifacts/benchmark.csv docs/reference_run/current/benchmark.csv
+          cp ci-artifacts/hugepage_strict.txt docs/reference_run/current/hugepage_strict.txt
+          cp ci-artifacts/dpdk_config.txt docs/reference_run/current/dpdk_config.txt
+          cp ci-artifacts/install_test.txt docs/reference_run/current/install_test.txt
+          cp ci-artifacts/commit.txt docs/reference_run/current/commit.txt
+          cp ci-artifacts/system.txt docs/reference_run/current/system.txt
+          cp ci-artifacts/compiler.txt docs/reference_run/current/compiler.txt
+
+      - name: Generate README figures
+        run: python3 scripts/render_readme_assets.py docs/reference_run/current docs/images
+
+      - name: Verify README figures
+        shell: bash
+        run: |
+          test ! -e main.png
+          git diff --check
+          git status --short -- docs/images
+
+      - name: Upload recorded run
+        uses: actions/upload-artifact@v7
+        with:
+          name: efvi-reference-run
+          path: |
+            ci-artifacts/
+            docs/reference_run/current/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Commit recorded data and figures
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/reference_run/current docs/images
+          if [[ -n "$(git status --porcelain -- docs/reference_run/current docs/images)" ]]; then
+            git commit -m "docs: refresh measurements and figures [skip ci]"
+            git fetch origin main
+            git rebase origin/main
+            git push
+          fi

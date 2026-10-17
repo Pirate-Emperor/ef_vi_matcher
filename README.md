@@ -1,131 +1,304 @@
 # EF_VI Zero-Copy Matcher
 
-## Overview
+A C++17/Linux limit-order-book matcher with fixed-capacity memory, deterministic price-time matching, a cache-line-isolated SPSC ring, Linux huge-page support, and an optional DPDK input path.
 
-The EF_VI Zero-Copy Matcher is a bare-metal, open-source order matching engine. It provides the low-level components that make up an ultra-low latency exchange simulator. 
+## Quick start
 
-Order matching is the process of accepting buy and sell orders for a security (or other fungible asset) and matching them to allow trading between parties who are otherwise unknown to each other. An order matching engine is the heart of every financial exchange, and may be used in many other circumstances including trading non-financial assets, or serving as a test-bed for systematic trading algorithms.
+On Ubuntu or Debian:
 
-In addition to the order matching process itself, the engine can be configured to maintain a "depth book" that records the number of open orders and total quantity represented by those orders at individual price levels.
+    git clone https://github.com/SpryzenHell/ef_vi_matcher.git
+    cd ef_vi_matcher
+    ./scripts/bootstrap_ubuntu.sh
+    ./scripts/run.sh
 
-## Performance & Latency 
-The matching engine is written in C++ using modern, high-performance techniques, specifically relying on **Solarflare EF_VI** and **kernel-bypass networking**. 
+The normal build does not require DPDK.
 
-Benchmark testing shows sustained rates of **2.0 million to 2.5 million inserts per second**, with deterministic tick-to-trade latencies frequently measuring below 800 nanoseconds. 
+The helper script configures CMake, builds the release targets, runs the release tests, and runs the matcher and examples.
 
-As always, the results of this type of performance test can vary depending on the hardware (NIC type, PCIe generation, NUMA topology) and operating system tuning (isolcpus, nohz_full) on which you run the test, so use these numbers as a rough order-of-magnitude estimate of the type of performance your application can expect.
+## What is included
 
-## Design Principles
-When minimizing latency, a good design is not when there is nothing left to add, but rather when there is nothing left to remove, as these queues exemplify. Minimizing latency naturally maximizes throughput. Low latency reciprocal is high throughput, in ideal mathematical and practical engineering sense. 
+    include/efvi/
+      types.hpp
+      spsc_ring.hpp
+      fixed_pool.hpp
+      order_book.hpp
+      transport.hpp
+      dpdk_adapter.hpp
 
-The main design principle these queues follow is _minimalism_, which results in such design choices as:
+    src/
+      main.cpp
+      hugepage_probe.cpp
+      dpdk_adapter.cpp
 
-* **Bare minimum of atomic instructions:** Inlinable by default push and pop functions can hardly be any cheaper in terms of CPU instruction number / L1i cache pressure.
-* **Explicit contention avoidance:** Padding atomic pointers with `alignas(64)` to avoid false-sharing for queue data members and its elements.
-* **Linear fixed size ring-buffer array:** No heap memory allocations (`malloc/free`) after a queue object is constructed. It doesn't get any more CPU L1d or TLB cache friendly than that.
-* **Value semantics:** Meaning that the queues make a copy/move upon `push`/`pop` and keep no references/pointers to its function arguments after returning.
+    tests/
+      efvi_tests.cpp
+      efvi_property_tests.cpp
 
-## Order Properties Supported
+    benchmarks/
+      efvi_benchmark.cpp
+      allocator_benchmark.cpp
+      spsc_benchmark.cpp
+      efvi_dpdk_benchmark.cpp
 
-The matching engine is aware of the following order properties:
+    examples/
+      order_flow_demo.cpp
+      software_rx_loopback.cpp
+      dpdk_nic_rx.cpp
 
-* **Side:** Buy or Sell
-* **Quantity**
-* **Symbol:** Representing the asset to be traded. The engine imposes no restrictions on the symbol. It is treated as a simple character string.
-* **Desired Price or "Market":** To accept the current price defined by the market. Trades will be generated at the specified price or any better price (higher price for sell orders, lower price for buy orders).
-* **Stop Loss Price:** To hold the order until the market price reaches the specified value.
-* **All or None (AON):** Flag to specify that the entire order should be filled or no trades should happen.
-* **Immediate or Cancel (IOC):** Flag to specify that after all trades that can be made against existing orders on the market have been made, the remainder of the order should be canceled. Note combining All or None and Immediate or Cancel produces an order commonly described as Fill or Kill.
+    scripts/
+      run.sh
+      run_experiments.py
+      render_readme_assets.py
+      benchmark.sh
+      hugepages_check.sh
+      run_perf.sh
 
-The only required properties are side, quantity, and price. Default values are available for the other properties.
+    docs/
+      architecture.md
+      dpdk.md
+      hugepages.md
+      performance.md
+      reference_run/current/
+      images/
 
-## Operations on Orders
+## Build manually
 
-In addition to submitting orders, traders may also submit requests to cancel or modify existing orders. (Modify is also known as cancel/replace). The requests may succeed or fail depending on previous trades executed against the order.
+Requirements:
 
-## Notifications
+| Requirement | Use |
+|---|---|
+| Linux | memory mapping and optional DPDK |
+| C++17 compiler | C++ build |
+| CMake 3.20+ | build system |
+| POSIX threads | matcher and SPSC code |
 
-The engine will notify the application when significant events occur to allow the application to actually execute the trades, and to publish market data for use by traders.
+Install the basic tools on Ubuntu:
 
-* **Notifications intended for the trader:**
-  * Order accepted 
-  * Order rejected
-  * Order filled (full or partial)
-  * Order replaced / Canceled
-* **Notifications intended for Market Data:**
-  * Trade generated
-  * Security changed
-  * Notification of changes in the depth book
-  * Best Bid or Best Offer (BBO) changed.
+    sudo apt update
+    sudo apt install build-essential cmake pkg-config
 
-## Single-Producer Single-Consumer (SPSC) Queues
-To move messages from the Network Thread to the Matching Thread, we use a Single-Producer Single-Consumer (SPSC) Ring Buffer. We strictly avoid `std::mutex`, which causes massive context switches.
+Build:
 
-A `push` or `pop` operation does two atomic steps:
-1. Atomically and exclusively claims the queue slot index to store/load an element to/from. That's producers incrementing `head` index, consumers incrementing `tail` index. Each slot is accessed by one producer and one consumer threads only.
-2. Atomically store/load the element into/from the slot. Producer storing into a slot changes its state to be non-`NIL`, consumer loading from a slot changes its state to be `NIL`. 
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DEFVI_ENABLE_DPDK=OFF -DEFVI_BUILD_TESTS=ON -DEFVI_BUILD_BENCHMARKS=ON -DEFVI_BUILD_EXAMPLES=ON
 
-## Building the Engine
+    cmake --build build --parallel
+    ctest --test-dir build --output-on-failure
 
-The EF_VI Matcher has no runtime dependencies. It will run in any environment that can run modern C++ (C++14/C++20).
+## Run the examples
 
-To build the test and example programs from source you need to create makefiles:
+Matcher:
 
-```bash
-git clone [https://github.com/your-username/EF_VI_Zero-Copy_Matcher.git](https://github.com/your-username/EF_VI_Zero-Copy_Matcher.git)
-cd EF_VI_Zero-Copy_Matcher
-mkdir build && cd build
-cmake ..
-make -j
+    ./build/efvi_matcher
 
-```
+![Matcher execution](docs/images/application_run.svg)
 
-### Preemption & OS Tuning
+Order flow:
 
-Linux task scheduler thread preemption is something no user-space process should be able to affect or escape, otherwise any/every malicious application would exploit that. Still, there are a few things one can do to minimize preemption of one's mission critical application threads:
+    ./build/efvi_order_flow_demo
 
-* Use real-time `SCHED_FIFO` scheduling class for your threads, e.g. `chrt --fifo 50 <app>`. A higher priority `SCHED_FIFO` thread or kernel interrupt handler can still preempt your `SCHED_FIFO` threads.
-* Use one same fixed real-time scheduling priority for all threads accessing same queue objects.
-* Isolate CPU cores, so that no interrupt handlers or applications ever run on it. Mission critical applications should be explicitly placed on these isolated cores with `taskset`.
-* Pin threads to specific cores, otherwise the task scheduler keeps moving threads to other idle CPU cores to level voltage/heat-induced wear-and-tear across CPU cores. Keeping a thread running on one same CPU core maximizes CPU cache hit rate. Moving a thread to another CPU core incurs otherwise unnecessary CPU cache thrashing.
+![Order flow](docs/images/order_flow_demo.svg)
 
-### Huge Pages
+Software RX loopback:
 
-Using huge pages improves performance of memory intensive applications dramatically. The engine utilizes 1GB or 2MB huge pages to minimise TLB misses.
+    ./build/efvi_software_rx_demo
 
-To enable huge pages do one of:
+The software RX example places the request in a fixed buffer and passes the same request address through the descriptor ring.
 
-```bash
-sudo hugeadm --pool-pages-min 1GB:1
-sudo hugeadm --pool-pages-min 2MB:32
+![Software RX](docs/images/software_rx_demo.svg)
 
-```
+## Tests
 
-Using smaller pages cripple CPU performance with TLB cache misses.
+The release test suite checks:
+
+| Area | Coverage |
+|---|---|
+| Matching | price-time FIFO, partial fills, multi-level fills |
+| Order types | IOC, FOK, market IOC |
+| Book operations | cancel, cancel/replace |
+| Replacement | partial-fill bounds and queue-priority rules |
+| Order lookup | duplicate IDs, tombstones, reuse |
+| Pool | exhaustion, reuse, alignment, size overflow |
+| SPSC | full/empty state and ordered transfers |
+| Layout | 64-byte request/node/level assumptions |
+| Random testing | reference-model comparison across multiple seeds |
+
+Run:
+
+    ctest --test-dir build --output-on-failure
+
+![Release test output](docs/images/test_snapshot.svg)
+
+![Test coverage summary](docs/images/test_matrix.svg)
+
+The randomized test compares the matcher against a small reference model after every operation. The recorded run uses 8 seeds and 1,000 operations per seed.
+
+## Sanitizer build
+
+    cmake -S . -B build-asan -DCMAKE_BUILD_TYPE=Debug -DEFVI_ENABLE_DPDK=OFF -DEFVI_ENABLE_SANITIZERS=ON
+
+    cmake --build build-asan --parallel
+    ctest --test-dir build-asan --output-on-failure
+
+The CI workflow runs both the release and ASan/UBSan suites.
+
+## Benchmark
+
+Basic benchmark:
+
+    ./build/efvi_benchmark 50000 --normal
+
+The benchmark reports matcher throughput, p50 and p99 operation latency, trade count, live orders, pool mapping size, Linux page size, actual HUGETLB backing, global C++ new calls during the measured matcher loop, and SPSC producer/consumer throughput.
+
+![Benchmark output](docs/images/benchmark_run.svg)
+
+## Repeated experiments
+
+Run the larger benchmark matrix:
+
+    ./scripts/run_experiments.py
+
+The experiment run measures:
+
+| Experiment | Data set |
+|---|---|
+| Matcher throughput | 10k, 25k, 50k, 100k, 200k operations |
+| Matcher latency | p50 and p99 at the same sizes |
+| Matcher repeats | 3 runs per size |
+| Allocator scaling | 1k, 5k, 10k, 50k, 100k objects |
+| Allocator repeats | 3 runs per size |
+| SPSC scaling | capacities 1024, 4096, 65536 |
+| SPSC repeats | 2 runs per capacity |
+| Page mode | normal, auto, 2 MiB, 1 GiB, strict 1 GiB |
+
+Raw CSV and text data are stored in docs/reference_run/current/.
+
+![Throughput analysis](docs/images/benchmark_throughput.svg)
+
+![Latency analysis](docs/images/benchmark_latency.svg)
+
+![Allocator scaling](docs/images/allocator_scaling.svg)
+
+![SPSC scaling](docs/images/spsc_scaling.svg)
+
+![Page mode experiment](docs/images/page_modes.svg)
+
+The figures use the recorded CSV data directly. Throughput also shows the minimum and maximum of the repeated runs. The detailed summary files report repeat spread and p99-to-p50 latency ratio. These are measurement summaries, not fixed performance promises.
+
+## Allocator
+
+    ./build/efvi_allocator_benchmark 10000
+
+The pool reserves its arena before the timed operations. The timed path only moves nodes through an intrusive free list.
+
+![Allocator run](docs/images/allocator_run.svg)
+
+## Huge pages
+
+The pool supports normal pages, 2 MiB HUGETLB pages, 1 GiB HUGETLB pages, and automatic selection.
+
+Check the host:
+
+    ./scripts/hugepages_check.sh
+
+Strict mode:
+
+    ./build/efvi_benchmark 10000 --huge1g --strict
+
+Strict mode refuses normal-page fallback when the requested 1 GiB mapping is not available.
+
+![Huge-page probe](docs/images/hugepage_probe.svg)
+
+![Strict huge-page result](docs/images/hugepage_strict_failure.svg)
+
+The project does not publish a TLB-miss reduction percentage without a matched target-machine perf experiment.
+
+See docs/hugepages.md and docs/performance.md.
+
+## DPDK
+
+DPDK is optional.
+
+Install the development package:
+
+    sudo apt update
+    sudo apt install libdpdk-dev
+
+Configure:
+
+    cmake -S . -B build-dpdk -DCMAKE_BUILD_TYPE=Release -DEFVI_ENABLE_DPDK=ON
+
+    cmake --build build-dpdk --parallel
+
+When DPDK is found, the project adds the DPDK library, benchmark and NIC capability probe.
+
+A real NIC run depends on host configuration. The repository does not report a physical-NIC result unless the NIC was actually configured and exercised.
+
+See docs/dpdk.md.
+
+## Docker
+
+    docker build -t efvi-zero-copy-matcher .
+    docker run --rm efvi-zero-copy-matcher
+
+The image runs the normal CMake build and test path.
+
+## Installation test
+
+The CI installs the release targets into a temporary prefix and executes the installed matcher. This checks that the project is not only buildable from the source tree.
+
+## Architecture
+
+![Runtime architecture](docs/images/architecture.svg)
+
+![Data layout](docs/images/data_layout.svg)
+
+The main data path is:
+
+    NIC or DPDK input
+    -> RX buffer
+    -> SPSC ring
+    -> in-place OrderRequest
+    -> fixed order pool
+    -> price ladder + FIFO
+    -> fixed order-ID index
+    -> trade sink
+
+See docs/architecture.md.
+
+## Recorded run
+
+The checked-in measurements are under docs/reference_run/current/.
+
+![Recorded environment](docs/images/environment.svg)
+
+The raw files include:
+
+- ctest_release.txt
+- ctest_asan.txt
+- benchmark_matrix.csv
+- benchmark_summary.csv
+- allocator_matrix.csv
+- allocator_summary.csv
+- spsc_matrix.csv
+- spsc_summary.csv
+- page_modes.csv
+- analysis.txt
+- experiment_console.txt
+- system.txt
+- compiler.txt
+
+## Limits of the measurements
+
+The code is complete and runnable on a normal Linux machine, but some measurements depend on the target host.
+
+- HUGETLB availability is a kernel configuration issue.
+- DPDK requires installed development files.
+- Physical NIC testing requires a configured device.
+- Latency and throughput depend on CPU, kernel, compiler, scheduler and process placement.
+- A TLB benefit must be measured with target-CPU counters.
+
+No hardware result is inferred when the hardware or kernel setup was not present in the recorded run.
 
 ## License
 
-This project is licensed under the Pirate-Emperor License. See the [LICENSE](LICENSE) file for details.
-
-## Author
-
-**Pirate-Emperor**
-
-[![Twitter](https://skillicons.dev/icons?i=twitter)](https://twitter.com/PirateKingRahul)
-[![Discord](https://skillicons.dev/icons?i=discord)](https://discord.com/users/1200728704981143634)
-[![LinkedIn](https://skillicons.dev/icons?i=linkedin)](https://www.linkedin.com/in/piratekingrahul)
-
-[![Reddit](https://img.shields.io/badge/Reddit-FF5700?style=for-the-badge&logo=reddit&logoColor=white)](https://www.reddit.com/u/PirateKingRahul)
-[![Medium](https://img.shields.io/badge/Medium-42404E?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@piratekingrahul)
-
-- GitHub: [Pirate-Emperor](https://github.com/Pirate-Emperor)
-- Reddit: [PirateKingRahul](https://www.reddit.com/u/PirateKingRahul/)
-- Twitter: [PirateKingRahul](https://twitter.com/PirateKingRahul)
-- Discord: [PirateKingRahul](https://discord.com/users/1200728704981143634)
-- LinkedIn: [PirateKingRahul](https://www.linkedin.com/in/piratekingrahul)
-- Skype: [Join Skype](https://join.skype.com/invite/yfjOJG3wv9Ki)
-- Medium: [PirateKingRahul](https://medium.com/@piratekingrahul)
-
-Thank you for visiting this project!
-
----
+MIT.
